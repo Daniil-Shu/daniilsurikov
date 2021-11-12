@@ -1,0 +1,172 @@
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+using namespace std;
+
+void manualInputWithCheckingForIndividuality(int* arr, const size_t size);
+
+void manualInputWithoutCheckingForIndividuality(int* arr, const size_t size);
+
+bool check_individuality(int* arr, int i);
+
+void randomDigits(int* arr, const size_t size);
+
+void output(int* arr, const size_t size);
+
+void sortBySelection(int* arr, const size_t size);
+
+void find_even(int* arr, const size_t size);
+
+int find_min(int* arr, const size_t size);
+
+void prnm();
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+
+	size_t size;
+	cout << "Введите размер массива: ";
+	cin >> size;
+	int* array = new int[size];
+
+	char key = ' ';
+	while (key != 27)
+	{
+		prnm();
+		key = getchar();
+		system("cls");
+		switch (key)
+		{
+		case'1':
+			manualInputWithoutCheckingForIndividuality(array, size);
+			key = getchar();
+			break;
+		case'2':
+			manualInputWithCheckingForIndividuality(array, size);
+			key = getchar();
+			break;
+		case'3':
+			randomDigits(array, size);
+			key = getchar();
+			break;
+		case'4':
+			sortBySelection(array, size);
+			key = getchar();
+			break;
+		case'5':
+			find_even(array, size);
+			key = getchar();
+			break;
+		case'6':
+			cout << "Минимальный элемент массива: " << find_min(array, size) << "\n";
+			key = getchar();
+			break;
+		case'7':
+			output(array, size);
+			key = getchar();
+			break;
+		}
+	}
+}
+
+void manualInputWithoutCheckingForIndividuality(int* arr, const size_t size)
+{
+	for (size_t i = 0; i < size; i++)
+	{
+		cout << "array[" << i << "] = ";
+		cin >> arr[i];
+	}
+}
+
+void manualInputWithCheckingForIndividuality(int* arr, const size_t size)
+{
+	for (size_t i = 0; i < size; i++)
+	{
+		cout << "array[" << i << "] = ";
+		cin >> arr[i];
+		if (check_individuality(arr, i) == 1)
+		{
+			cout << "Вы уже вводили данный элемент, попробуйте ввести другой элемент\n";
+			i--;
+		}
+	}
+}
+
+bool check_individuality(int* arr, int i)
+{
+	for (size_t k = 0; k < i; k++)
+		return (arr[k] == arr[i]);
+	return (0);
+}
+
+void randomDigits(int* arr, const size_t size)
+{
+	srand(time(0));
+	const int min = -10;
+	const int max = 10;
+	for (size_t i = 0; i < size; i++)
+		arr[i] = rand() % (min - max + 1) + min;
+}
+
+void output(int* arr, const size_t size)
+{
+	cout << "Ваш массив:[ ";
+	for (size_t i = 0; i < size; i++)
+		cout << arr[i] << " ";
+	cout << "]\n";
+}
+
+void sortBySelection(int* arr, const size_t size) //https://ravesli.com/urok-77-sortirovka-massivov-metodom-vybora/ о сортировке выбором
+{
+	for (size_t i = 0; i < size; i++)
+	{
+		int minIndex = i;
+
+		for (size_t j = i; j < size; j++)
+			if (arr[j] < arr[minIndex])
+				minIndex = j;
+
+		swap(arr[minIndex], arr[i]);
+	}
+}
+
+void find_even(int* arr, const size_t size)
+{
+	size_t number = 0; //number количество нечетных элементов
+	int sum = 0;// sum сумма нечетных элементов
+
+	for (size_t i = 0; i < size; i++)
+		if (arr[i] % 2 == 0) // если остаток деления элемента массива(arr[i]) на 2 РАВЕН нулю, то идем в тело условия(в скобки) (!!УСЛОВИЯ ЧЕТНОСТИ ЧИСЛА. ЕСЛИ ОСТАТОК РАВЕН 0 ПРИ ДЕЛЕНИИ ЧИСЛА НА 2, ТО ЧИСЛО ЧЕТНОЕ!!)
+		{
+			number++; // добавляем единичку для подсчёта количества нечетных элементов
+			sum += arr[i]; // добавляем элемент массива для подсчёта суммы
+		}
+	cout << "Количество четных элементов: " << number << "\nСумма четных элементов: " << sum << "\n";
+}
+
+// [ 1 2 3 -5 -10 19 ] предполагаем что четных элементов НЕТ.
+// доказываем что это так. Начинаем идти по массиву. arr[0] = 1 => 1 %(остаток деления) 2 равен 0? Нет. => идем дальше. arr[1] = 2 => 2 % 2 равен 0? Да. => number + 1, sum + 2
+
+int find_min(int* arr, const size_t size)
+{
+	int min = 2147483647; // минимальное = максимальному int потому что мы предполагаем что минимальное СТРОГО МЕНЬШЕ максимального int
+	for (size_t i = 0; i < size; i++) // начинаем идти по массиву
+		if (arr[i] < min) // если элемент массива < min, то идем в тело условия
+			min = arr[i]; // говорим что есть элемент меньше чем мы предполагали
+	return (min); // возвращаем в main значение минимума(для вывода в самом main)
+}
+
+void prnm()
+{
+	cout << "Введите цифру для дальнейшей работы программы:\n";
+	cout << "1) 1 - Ввод с клавиатуры без проверки на уникальность элементов\n";
+	cout << "2) 2 - Ввод с клавиатуры с проверкой на уникальность элементов\n";
+	cout << "3) 3 - Заполнение массива случайными числами\n";
+	cout << "4) 4 - Сортировка массива методом выбора\n";
+	cout << "5) 5 - Определение количества четных элементов массива и нахождение их суммы\n";
+	cout << "6) 6 - Поиск минимального элемента массива\n";
+	cout << "7) 7 - Вывод массива\n";
+	cout << "8) ESC - выход\n";
+	cout << '\n';
+}
